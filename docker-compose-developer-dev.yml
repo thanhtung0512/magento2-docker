@@ -1,0 +1,34 @@
+version: '3.0'
+services:
+  elasticsearch:
+    image: docker.io/bitnami/elasticsearch:7
+    volumes:
+      - 'elasticsearch_data:/bitnami/elasticsearch/data'
+  web:
+    build: ./developer
+    ports:
+      - "80:80"
+    links:
+      - db
+    volumes: 
+      - magento-data:/var/www/html  
+    env_file:
+      - env
+  db:
+    image: mysql:5.6.23
+    volumes:
+      - db-data:/var/lib/mysql/data
+    env_file:
+      - env
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    ports:
+      - "8580:80"
+    links:
+      - db     
+volumes:
+  magento-data:
+  db-data: 
+  elasticsearch_data:
+    driver: local

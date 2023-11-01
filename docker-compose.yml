@@ -1,0 +1,35 @@
+version: '3.0'
+services:
+  elasticsearch:
+    image: docker.io/bitnami/elasticsearch:7
+    volumes:
+      - 'elasticsearch_data:/bitnami/elasticsearch/data'
+  web:
+    image: alexcheng/magento2:2.2.1
+    ports:
+      - "80:80"
+    links:
+      - db
+    volumes: 
+      - magento-data:/var/www/html  
+    env_file:
+      - env
+  db:
+    image: mysql:5.7
+    command: [--ignore-db-dir=lost+found]
+    volumes:
+      - db-data:/var/lib/mysql
+    env_file:
+      - env
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8580:80"
+    links:
+      - db 
+
+volumes:
+  magento-data:
+  db-data: 
+  elasticsearch_data:
+    driver: local
